@@ -18,7 +18,7 @@ public:
 
     my_vector(my_vector&& vect) noexcept;
 
-    void assign(size_t count, T elem);
+    void assign(size_t count, const T& elem);
 
     ~my_vector();
 
@@ -34,7 +34,7 @@ public:
 
     void shrink_to_fit();
 
-    void push_back(T num);
+    void push_back(const T& num);
 
     void pop_back();
 

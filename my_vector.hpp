@@ -36,7 +36,7 @@ my_vector<T>::my_vector(my_vector<T> &&vect) noexcept : sze(vect.size()), capact
 }
 
 template <class T>
-void my_vector<T>::assign(size_t count, T elem) {
+void my_vector<T>::assign(size_t count, const T& elem) {
     T *n = new T[count];
     for (size_t i = 0; i < count; ++i) n[i] = elem;
     delete[] elements;
@@ -94,9 +94,15 @@ void my_vector<T>::shrink_to_fit() {
 }
 
 template <class T>
-void my_vector<T>::push_back(T num) {
-    if (sze == capacty) reserve(capacty + 8);
-    elements[sze++] = num;
+void my_vector<T>::push_back(const T& num) {
+    if(&num < elements || (&num > elements + sze)) {
+        if (sze == capacty) reserve(capacty + 8);
+        elements[sze++] = num;
+    } else {
+        T n = T(num);
+        if (sze == capacty) reserve(capacty + 8);
+        elements[sze++] = n;
+    }
 }
 
 template <class T>

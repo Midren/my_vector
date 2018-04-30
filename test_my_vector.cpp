@@ -127,6 +127,8 @@ TEST_F(VectorTest, Push_back) {
 
     vec_s_2.push_back("abc");
     ASSERT_EQ(vec_s_2.size(), 3);
+    vec_s_2.push_back(vec_s_2[0]);
+    ASSERT_EQ(vec_s_2.end(), vec_s_2[0]);
 }
 
 TEST_F(VectorTest, Pop_back) {
