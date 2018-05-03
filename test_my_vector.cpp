@@ -1,4 +1,4 @@
-#include "my_vector.h"
+#include "my_vector.hpp"
 
 #include "gtest/gtest.h"
 
@@ -127,8 +127,9 @@ TEST_F(VectorTest, Push_back) {
 
     vec_s_2.push_back("abc");
     ASSERT_EQ(vec_s_2.size(), 3);
+
     vec_s_2.push_back(vec_s_2[0]);
-    ASSERT_EQ(vec_s_2.end(), vec_s_2[0]);
+    ASSERT_EQ(vec_s_2.back(), vec_s_2[0]);
 }
 
 TEST_F(VectorTest, Pop_back) {
@@ -171,10 +172,10 @@ TEST_F(VectorTest, Front) {
 }
 
 TEST_F(VectorTest, End) {
-    ASSERT_EQ(vec_i_2.end(), vec_i_2[vec_i_2.size()-1]);
-    ASSERT_EQ(vec_i_3.end(), vec_i_3[vec_i_3.size()-1]);
-    ASSERT_EQ(vec_i_4.end(), vec_i_4[vec_i_4.size()-1]);
-    ASSERT_EQ(vec_s_2.end(), vec_s_2[vec_s_2.size()-1]);
+    ASSERT_EQ(vec_i_2.back(), vec_i_2[vec_i_2.size()-1]);
+    ASSERT_EQ(vec_i_3.back(), vec_i_3[vec_i_3.size()-1]);
+    ASSERT_EQ(vec_i_4.back(), vec_i_4[vec_i_4.size()-1]);
+    ASSERT_EQ(vec_s_2.back(), vec_s_2[vec_s_2.size()-1]);
 }
 
 TEST_F(VectorTest, Data) {
@@ -197,13 +198,24 @@ TEST_F(VectorTest, Clear) {
     ASSERT_EQ(vec_s_2.capacity(), 0);
 }
 
-TEST_F(VectorTest, swap) {
+TEST_F(VectorTest, Swap) {
     vec_i_4.swap(vec_i_3);
     ASSERT_EQ(vec_i_4[0], 1);
     ASSERT_EQ(vec_i_3[0], 49);
 
     ASSERT_EQ(vec_i_4.size(), 3);
     ASSERT_EQ(vec_i_3.size(), 2);
+}
+
+TEST_F(VectorTest, Assiment) {
+    vec_i_4 = vec_i_3;
+    for(int i = 0; i < vec_i_3.size(); i++) {
+        ASSERT_EQ(vec_i_3[i], vec_i_4[i]);
+    }
+    vec_i_2 = vec_i_2;
+    for(int i = 0; i < vec_i_2.size(); i++) {
+        ASSERT_EQ(vec_i_2[i], vec_i_2[i]);
+    }
 }
 int main(int argc, char* argv[]) {
     ::testing::InitGoogleTest(&argc, argv);
