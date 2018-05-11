@@ -1,16 +1,23 @@
 #ifndef MY_VECTOR_MY_VECTOR_H
 #define MY_VECTOR_MY_VECTOR_H
+
 #include <iostream>
+#include "my_vector_iterator.hpp"
+
 class wrong_index : public std::exception {
 public:
+
     wrong_index(int i) : ind(i) {}
+
 private:
     int ind;
 };
 
-template <class T>
+template<class T>
 class my_vector {
 public:
+    typedef my_vector_iterator<T> iterator;
+
     my_vector();
 
     explicit my_vector(size_t sz);
@@ -19,11 +26,11 @@ public:
 
     my_vector(std::initializer_list<T> lst);
 
-    my_vector(const my_vector& vect);
+    my_vector(const my_vector &vect);
 
-    my_vector(my_vector&& vect) noexcept;
+    my_vector(my_vector &&vect) noexcept;
 
-    void assign(size_t count, const T& elem);
+    void assign(size_t count, const T &elem);
 
     ~my_vector();
 
@@ -39,43 +46,48 @@ public:
 
     void shrink_to_fit();
 
-    void push_back(const T& num);
+    void push_back(const T &num);
 
     void pop_back();
 
-    T& at(size_t ind);
+    T &at(size_t ind);
 
-    const T& at(size_t ind) const;
+    const T &at(size_t ind) const;
 
-    T& operator[](size_t ind);
+    T &operator[](size_t ind);
 
-    const T& operator[](size_t ind) const;
+    const T &operator[](size_t ind) const;
 
-    T& front();
+    T &front();
 
-    const T& front() const;
+    const T &front() const;
 
-    T& back();
+    T &back();
 
-    const T& back() const;
+    const T &back() const;
 
-    T* data();
+    T *data();
 
-    const T* data() const;
+    const T *data() const;
 
-    my_vector& operator=(const my_vector& vect);
+    my_vector &operator=(const my_vector &vect);
 
-    my_vector& operator=(my_vector&& vect) noexcept;
+    my_vector &operator=(my_vector &&vect) noexcept;
 
     void clear();
 
-    void swap(my_vector& other);
+    void swap(my_vector &other);
 
-private:
+    my_vector_iterator<T> begin();
+
+    my_vector_iterator<T> end();
+
+//private:
     size_t sze = 0;
     size_t capacty = 1;
-    T* elements = nullptr;
+    T *elements = nullptr;
 };
 
 #include "my_vector_impl.hpp"
+
 #endif //MY_VECTOR_MY_VECTOR_H

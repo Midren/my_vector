@@ -4,7 +4,7 @@ template<class T>
 my_vector<T>::my_vector() : elements(new T[1]) {}
 
 template<class T>
-my_vector<T>::my_vector(size_t sz) : elements(new T[1]){
+my_vector<T>::my_vector(size_t sz) : elements(new T[1]) {
     resize(sz);
 }
 
@@ -15,14 +15,14 @@ my_vector<T>::my_vector(size_t sz, T init) : elements(new T[1]) {
 }
 
 template<class T>
-my_vector<T>::my_vector(std::initializer_list<T> lst) : elements(new T[1]){
+my_vector<T>::my_vector(std::initializer_list<T> lst) : elements(new T[1]) {
     resize(lst.size());
     int j = 0;
     for (auto i = lst.begin(); i != lst.end(); i++, j++) elements[j] = *i;
 }
 
 template<class T>
-my_vector<T>::my_vector(const my_vector<T> &vect) : elements(new T[1]){
+my_vector<T>::my_vector(const my_vector<T> &vect) : elements(new T[1]) {
     auto n = new T[vect.capacity()];
     for (size_t i = 0; i < vect.size(); ++i) n[i] = vect[i];
     elements = n;
@@ -100,7 +100,7 @@ template<class T>
 void my_vector<T>::push_back(const T &num) {
     if (sze == capacty) {
         if (&num < elements || (&num > elements + sze)) {
-            if (sze == capacty) reserve(capacty*2);
+            if (sze == capacty) reserve(capacty * 2);
             elements[sze++] = T(num);
             return;
         }
@@ -121,7 +121,7 @@ T &my_vector<T>::at(size_t ind) {
 }
 
 template<class T>
-const T& my_vector<T>::at(size_t ind) const {
+const T &my_vector<T>::at(size_t ind) const {
     if (ind >= sze) throw wrong_index(ind);
     return elements[ind];
 }
@@ -132,7 +132,7 @@ T &my_vector<T>::operator[](size_t ind) {
 }
 
 template<class T>
-const T& my_vector<T>::operator[](size_t ind) const {
+const T &my_vector<T>::operator[](size_t ind) const {
     return elements[ind];
 }
 
@@ -142,7 +142,7 @@ T &my_vector<T>::front() {
 }
 
 template<class T>
-const T& my_vector<T>::front() const {
+const T &my_vector<T>::front() const {
     return elements[0];
 }
 
@@ -152,7 +152,7 @@ T &my_vector<T>::back() {
 }
 
 template<class T>
-const T& my_vector<T>::back() const {
+const T &my_vector<T>::back() const {
     return elements[sze - 1];
 }
 
@@ -210,3 +210,12 @@ void my_vector<T>::swap(my_vector &other) {
     capacty = tmp_cap;
 }
 
+template<class T>
+my_vector_iterator<T> my_vector<T>::begin() {
+    return my_vector_iterator<T>(elements);
+}
+
+template<class T>
+my_vector_iterator<T> my_vector<T>::end() {
+    return my_vector_iterator<T>(elements + sze);
+}

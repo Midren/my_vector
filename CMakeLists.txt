@@ -3,5 +3,5 @@ project(my_vector)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(my_vector my_vector.hpp test_my_vector.cpp)
+add_executable(my_vector my_vector.hpp test_my_vector.cpp my_vector_iterator.hpp)
 TARGET_LINK_LIBRARIES(my_vector -lgtest)

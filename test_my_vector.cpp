@@ -1,6 +1,8 @@
 #include "my_vector.hpp"
+#include <algorithm>
 
 #include "gtest/gtest.h"
+#include "my_vector_iterator.hpp"
 
 class VectorTest : public ::testing::Test {
 protected:
