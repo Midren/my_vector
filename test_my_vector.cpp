@@ -65,7 +65,6 @@ TEST_F(VectorTest, Assign) {
     for(int i = 0; i < 16; i++) {
         ASSERT_EQ(vec_s_1[i], "hello");
     }
-
 }
 
 TEST_F(VectorTest, Reserve) {
@@ -222,4 +221,6 @@ TEST_F(VectorTest, Assiment) {
 int main(int argc, char* argv[]) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
+    my_vector<int> mv = my_vector<int>(2, 49);
+    std::cout << mv[0];
 }

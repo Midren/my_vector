@@ -4,10 +4,11 @@
 #include <iterator>
 
 template <class T>
-class my_vector_iterator : public std::iterator<std::random_access_iterator_tag, T> {
+class my_vector_iterator {
 public:
     typedef T value_type;
     typedef std::random_access_iterator_tag iterator_category;
+    typedef ptrdiff_t difference_type;
     typedef T* pointer;
     typedef T* &reference;
 

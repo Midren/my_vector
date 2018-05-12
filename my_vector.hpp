@@ -72,7 +72,7 @@ public:
 
     my_vector &operator=(const my_vector &vect);
 
-    my_vector &operator=(my_vector &&vect) noexcept;
+//    my_vector &operator=(my_vector &&vect) noexcept;
 
     void clear();
 
@@ -82,10 +82,13 @@ public:
 
     my_vector_iterator<T> end();
 
-//private:
+private:
     size_t sze = 0;
-    size_t capacty = 1;
+    size_t capacty = 0;
     T *elements = nullptr;
+    void initialize(size_t num);
+    void destroy(T* num);
+    void destroy(T* beg, T* end);
 };
 
 #include "my_vector_impl.hpp"
