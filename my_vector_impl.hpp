@@ -1,17 +1,9 @@
 #include "my_vector.hpp"
 
 template <class T>
-void my_vector<T>::initialize(size_t num) {
+T* my_vector<T>::initialize(size_t num) {
     T* tmp = static_cast<T*>(::operator new(sizeof(T)*num));
-    for (size_t i = 0; i < num; i++) {
-        new(tmp+i)T();
-    }
-    for (size_t i = 0; i < sze; i++) {
-        new(tmp+i)T(elements[i]);
-    }
-    destroy(elements, elements + sze);
-    elements = tmp;
-    capacty = num;
+    return tmp;
 }
 
 template <class T>
@@ -26,22 +18,19 @@ void my_vector<T>::destroy(T* beg, T* end) {
         destroy(cur);
         ++cur;
     }
-    ::operator delete(beg);
 }
 template<class T>
 my_vector<T>::my_vector() {
-    initialize(1);
+    reserve(8);
 }
 
 template<class T>
 my_vector<T>::my_vector(size_t sz) {
-    initialize(1);
     resize(sz);
 }
 
 template<class T>
 my_vector<T>::my_vector(size_t sz, T init) {
-    initialize(1);
     resize(sz);
     for (size_t i = 0; i < sze; i++)
         elements[i] = init;
@@ -50,7 +39,6 @@ my_vector<T>::my_vector(size_t sz, T init) {
 
 template<class T>
 my_vector<T>::my_vector(std::initializer_list<T> lst) {
-    initialize(1);
     resize(lst.size());
     int j = 0;
     for (auto i = lst.begin(); i != lst.end(); i++, j++) elements[j] = *i;
@@ -58,8 +46,13 @@ my_vector<T>::my_vector(std::initializer_list<T> lst) {
 
 template<class T>
 my_vector<T>::my_vector(const my_vector<T> &vect) {
-    initialize(1);
-    *this = vect;
+    elements = initialize(vect.size());
+    for (size_t i = 0; i < vect.size(); i++) {
+        new(elements + i) T (vect.elements[i]);
+    }
+    sze = vect.size();
+    capacty = vect.size();
+
 }
 
 template<class T>
@@ -72,10 +65,11 @@ my_vector<T>::my_vector(my_vector<T> &&vect) noexcept : sze(vect.size()), capact
 
 template<class T>
 void my_vector<T>::assign(size_t count, const T &elem) {
-    T* n = static_cast<T*>(::operator new(sizeof(T)*count));
+    auto n = initialize(count);
     for (size_t i = 0; i < count; ++i)
         new(n+i) T(elem);
     destroy(elements, elements + sze);
+    ::operator delete(elements);
     elements = n;
     sze = count;
     capacty = count;
@@ -84,26 +78,31 @@ void my_vector<T>::assign(size_t count, const T &elem) {
 
 template<class T>
 my_vector<T>::~my_vector() {
-    for(size_t i =0; i < sze; i++)
-        elements[i].~T();
-
+    destroy(elements, elements + sze);
     ::operator delete(elements);
 }
 
 template<class T>
 void my_vector<T>::reserve(size_t num) {
     if (num <= capacty) return;
-    initialize(num);
+    auto tmp = initialize(num);
+    for (size_t i = 0; i < sze; i++) {
+        new(tmp+i) T( elements[i] );
+    }
+    destroy(elements, elements + sze);
+    ::operator delete(elements);
+    elements = tmp;
+    capacty = num;
 }
 
 template<class T>
 void my_vector<T>::resize(size_t num) {
     reserve(num);
     if (num <= sze) {
-        destroy(elements, elements + sze);
+        destroy(elements + num, elements + sze);
     } else {
         for (size_t i = sze; i < num; ++i)
-            new(elements + i)T();
+            new(elements + i) T();
     }
     sze = num;
 }
@@ -126,11 +125,14 @@ bool my_vector<T>::empty() const {
 template<class T>
 void my_vector<T>::shrink_to_fit() {
     if (sze == capacty) return;
-    T *n = new T[sze];
-    for (size_t i = 0; i < sze; ++i) n[i] = elements[i];
-    delete[] elements;
+    auto tmp = initialize(sze);
+    for (size_t i = 0; i < sze; i++) {
+        new(tmp+i) T( elements[i] );
+    }
+    destroy(elements, elements + sze);
+    ::operator delete(elements);
+    elements = tmp;
     capacty = sze;
-    elements = n;
 }
 
 template<class T>
@@ -138,11 +140,11 @@ void my_vector<T>::push_back(const T &num) {
     if (sze == capacty) {
         if (&num < elements || (&num > elements + sze)) {
             if (sze == capacty) reserve(capacty * 2);
-            elements[sze++] = T(num);
+            new(elements + sze++)T(num);
             return;
         }
     }
-    elements[sze++] = num;
+    new(elements + sze++) T(num);
 }
 
 template<class T>
@@ -206,36 +208,30 @@ const T *my_vector<T>::data() const {
 
 template<class T>
 my_vector<T> &my_vector<T>::operator=(const my_vector<T> &vect) {
-    T* n = static_cast<T*>(::operator new(sizeof(T)*vect.size()));
-    for (size_t i = 0; i < vect.size(); i++) {
-        new(n+i)T(vect.elements[i]);
-    }
-    sze = vect.size();
-    capacty = vect.capacity();
-    destroy(elements, elements + sze);
-    elements = n;
+    my_vector tmp(vect);
+    this->swap(tmp);
     return *this;
 }
 
-//template<class T>
-//my_vector<T> &my_vector<T>::operator=(my_vector<T> &&vect) noexcept {
-//    sze = vect.size();
-//    capacty = vect.capacity();
-//    for(size_t i = 0; i < sze; i++)
-//        destroy(i);
-//    ::operator delete(elements);
-//    elements = vect.elements;
-//    vect.sze = 0;
-//    vect.capacty = 0;
-//    vect.elements = nullptr;
-//    return *this;
-//}
+template<class T>
+my_vector<T> &my_vector<T>::operator=(my_vector<T> &&vect) noexcept {
+    destroy(elements, elements+sze);
+    ::operator delete(elements);
+    sze = vect.sze;
+    capacty = vect.capacty;
+    elements = vect.elements;
+    vect.sze = 0;
+    vect.capacty = 0;
+    vect.elements = nullptr;
+    return *this;
+}
 
 template<class T>
 void my_vector<T>::clear() {
     sze = 0;
     capacty = 0;
     destroy(elements, elements + sze);
+    ::operator delete(elements);
     elements = nullptr;
 }
 

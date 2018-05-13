@@ -7,7 +7,7 @@
 class wrong_index : public std::exception {
 public:
 
-    wrong_index(int i) : ind(i) {}
+    wrong_index(size_t i) : ind(i) {}
 
 private:
     int ind;
@@ -72,7 +72,7 @@ public:
 
     my_vector &operator=(const my_vector &vect);
 
-//    my_vector &operator=(my_vector &&vect) noexcept;
+    my_vector &operator=(my_vector &&vect) noexcept;
 
     void clear();
 
@@ -86,7 +86,7 @@ private:
     size_t sze = 0;
     size_t capacty = 0;
     T *elements = nullptr;
-    void initialize(size_t num);
+    T* initialize(size_t num);
     void destroy(T* num);
     void destroy(T* beg, T* end);
 };
