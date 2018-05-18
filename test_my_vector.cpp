@@ -3,6 +3,7 @@
 
 #include "gtest/gtest.h"
 #include "my_vector_iterator.hpp"
+#include "my_algorithm.hpp"
 
 class VectorTest : public ::testing::Test {
 protected:
@@ -236,6 +237,15 @@ TEST_F(VectorTest, Iterator) {
     for (size_t i = 0; i < mv.size(); ++i) {
         ASSERT_EQ(mv[i], mv3[i]);
     }
+
+}
+
+TEST_F(VectorTest, Reduce) {
+    auto ae1 = reduce(vec_i_3.begin(), vec_i_3.end(), [](int x, int y) { return x * y; });
+    ASSERT_EQ(ae1, 6);
+
+    auto ae2 = reduce(vec_s_2.begin(), vec_s_2.end(), [](std::string x, std::string y) {return x + y;});
+    ASSERT_EQ(ae2, "abcabcd");
 
 }
 
